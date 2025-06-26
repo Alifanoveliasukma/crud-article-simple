@@ -41,7 +41,7 @@ func UpdateArticle(db *sql.DB, id int, judul, gambarURL, kategori, content, crea
 	return nil
 }
 
-func DeleteArticle(db *sql.DB, id int, judul, gambarURL, kategori, content, createdAt string) error {
+func DeleteArticle(db *sql.DB, id int) error {
 	query := "DELETE FROM article WHERE id = ?"
 	_, err := db.Exec(query, id)
 	if err != nil {
