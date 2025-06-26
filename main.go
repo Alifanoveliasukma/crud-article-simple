@@ -2,13 +2,10 @@ package main
 
 import (
 	"database/sql"
-	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
-	"strconv"
-	"github.com/go-sql-driver/mysql"
-	"github.com/gorilla/mux" //menangani permintaan http yang masuk
+	"github.com/gorilla/mux" 
+	"github.com/Alifanoveliasukma/crud-article-simple/handlers"
 )
 
 const (
@@ -19,14 +16,20 @@ const (
 )
 
 func main() {
+
+	db, err := sql.Open(dbDriver, dbUser+":"+dbPass+"@/"+dbName)
+	if err != nil {
+		log.Fatal("Failed connection to database", err)
+	}
+	defer db.Close()
 	// membuat router baru
 	r := mux.NewRouter()
 
 	// mendefinisikan route http dengan router
-	r.HandleFunc("/user", createUserHandler).Methods("POST")
-	r.HandleFunc("/user/{id}", getUserHandler).Methods("GET")
-	r.HandleFunc("/user/{id}", updateUserHandler).Methods("PUT")
-	r.HandleFunc("/user/{id}", deleteUserHandler).Methods("DELETE")
+	r.HandleFunc("/article", handlers.CreateArticleHandler(db)).Methods("POST")
+	r.HandleFunc("/article/{id}", handlers.GetArticleHandler(db)).Methods("GET")
+	r.HandleFunc("/article/{id}", handlers.UpdateArticleHandler(db)).Methods("PUT")
+	r.HandleFunc("/article/{id}", handlers.DeleteArticleHandler(db)).Methods("DELETE")
 
 	// menjalankan server pada port 8090
 	log.Println("Server listening on :8090")
